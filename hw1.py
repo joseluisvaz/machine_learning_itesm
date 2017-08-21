@@ -51,7 +51,7 @@ def makering(r, thickness):
 #generating linearly separable classes
 
 w1 = np.random.multivariate_normal([1, 2], std, 1000);
-w2 = np.random.multivariate_normal([2,1], std, 1000);
+w2 = np.random.multivariate_normal([1,1.5], std, 1000);
 w3 =  np.random.multivariate_normal([3,2], std, 1000);
 
 # GENERATE NOT LINEARLY SEPARATE CLASSES
