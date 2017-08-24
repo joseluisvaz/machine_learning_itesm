@@ -1,0 +1,8 @@
+.gitignore.swp
+.gitignore.swo
+.git
+.
+..
+.idea
+.ipynb_checkpoints
+
