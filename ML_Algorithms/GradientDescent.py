@@ -4,7 +4,7 @@ from math import sqrt
 
 class GradientClassifier(lm.LinearRegression):
 
-    def goldenSearch(self, coef, grad, Xaug, T, a=0, b=1, tresh=0.001):
+    def goldenSearch(self,f , a=0, b=1, tresh=0.001):
 
         golden_ratio = 0.618034
 
@@ -15,15 +15,8 @@ class GradientClassifier(lm.LinearRegression):
         lambda_2 = a + golden_ratio * length
 
         while length > tresh:
-            inner_1 = coef + lambda_1 * grad
-            inner_2 = coef + lambda_2 * grad
 
-            f_lambda_1 = np.dot((T - np.matmul(Xaug, inner_1).reshape(T.shape)).T,
-                                (T - np.matmul(Xaug, inner_1).reshape(T.shape)))
-            f_lambda_2 = np.dot((T - np.matmul(Xaug, inner_2).reshape(T.shape)).T,
-                                (T - np.matmul(Xaug, inner_2).reshape(T.shape)))
-
-            if f_lambda_1 > f_lambda_2:
+            if f(lambda_1) > f(lambda_2):
                 a = lambda_1
                 lambda_1 = lambda_2
                 length = b - a
@@ -71,7 +64,9 @@ class GradientClassifier(lm.LinearRegression):
             if step == "fixed":
                 coef = coef - step_size*grad
             elif step == "golden":
-                stepie = self.goldenSearch(coef, grad, Xaug, T)
+                f = lambda x: np.dot((T - np.matmul(Xaug, coef + x * grad).reshape(T.shape)).T,
+                                (T - np.matmul(Xaug, coef + x * grad).reshape(T.shape)))
+                stepie = self.goldenSearch(f)
                 coef = coef - stepie*grad
 
             if print_iter and counter%100 == 0:
