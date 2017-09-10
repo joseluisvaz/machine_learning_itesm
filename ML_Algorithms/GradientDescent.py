@@ -1,45 +1,90 @@
 import numpy as np
 import ML_Algorithms.LinearMethods as lm
+from math import sqrt
 
 class GradientClassifier(lm.LinearRegression):
 
-    def fit(self, X, T, reg=0, step_size = 0.01, max_iter = 10000, tresh = 0.0000001):
-        """
-        This method fits a classifier using the method of gradient descent
-        :param X: Input Data set as a numpy array
-        :param T: Labels Vector as a numpy  array
-        :param reg: Parameter for regularization
-        :return: self
-        """
+    def goldenSearch(self, coef, grad, Xaug, T, a=0, b=1, tresh=0.001):
 
+        golden_ratio = 0.618034
+
+        #Define initial length for search
+        length = b - a
+
+        lambda_1 = a + golden_ratio**2 * length
+        lambda_2 = a + golden_ratio * length
+
+        while length > tresh:
+            inner_1 = coef + lambda_1 * grad
+            inner_2 = coef + lambda_2 * grad
+
+            f_lambda_1 = np.dot((T - np.matmul(Xaug, inner_1).reshape(T.shape)).T,
+                                (T - np.matmul(Xaug, inner_1).reshape(T.shape)))
+            f_lambda_2 = np.dot((T - np.matmul(Xaug, inner_2).reshape(T.shape)).T,
+                                (T - np.matmul(Xaug, inner_2).reshape(T.shape)))
+
+            if f_lambda_1 > f_lambda_2:
+                a = lambda_1
+                lambda_1 = lambda_2
+                length = b - a
+                lambda_2 = a + golden_ratio * length
+            else:
+                b = lambda_2
+                lambda_2 = lambda_1
+                length = b - a
+                lambda_1 = a + golden_ratio**2 * length
+
+        return (b+a)/2.0
+
+    def fit(self,
+            X,
+            T,
+            reg=0,
+            step_size=0.001,
+            max_iter=10000,
+            tresh=0.0000001,
+            step="fixed",
+            print_iter=False):
+
+        """
+        Implementation of Gradient Descent
+        """
         #Creating augmented Vector
         Xaug = self.augmentVector(X)
 
         #Initializing the coefficients
-        coef = np.zeros(Xaug.shape[1]) + 0.01
+        coef = np.zeros(Xaug.shape[1])
         grad = np.zeros(Xaug.shape[1])
 
-        while(max_iter > 0):
+        counter = 0
+        while(counter < max_iter):
+
             #iterating through columns
             loss = T - np.matmul(Xaug, coef).reshape(T.shape)
             for j in range(Xaug.shape[1]):
                 grad[j] = - np.matmul(loss.T, Xaug[:, j]) + reg*coef[j]
 
-            #updating after the gradient is calculated
-            grad = grad/Xaug.shape[0]
-            factor = step_size*grad
-            coef = coef - factor
+            #updating after the gradient is calculate
+            #grad = grad/Xaug.shape[0]
+            grad = grad/np.linalg.norm(grad)
 
-            if abs(sum(factor)) < tresh:
+            if step == "fixed":
+                coef = coef - step_size*grad
+            elif step == "golden":
+                stepie = self.goldenSearch(coef, grad, Xaug, T)
+                coef = coef - stepie*grad
+
+            if print_iter and counter%100 == 0:
+                print('coef:' + str(coef))
+
+            if sum(abs(grad)) < tresh:
+                print("steps: " + str(counter))
                 break
 
-            max_iter = max_iter - 1
+            counter = counter + 1
 
         self.coef = coef
         return self
-
-
-
 
 
 
