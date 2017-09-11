@@ -15,6 +15,7 @@ class LinearRegression(object):
     def __init__(self):
         self.coef = None
         self.dim = None
+        self.list_coef = []
 
     def augmentVector(self, X):
         """
