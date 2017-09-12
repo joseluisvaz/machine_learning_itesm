@@ -13,40 +13,43 @@ class GradientClassifier(lm.LinearRegression):
             max_iter=10000,
             tresh=0.0000001,
             step="fixed",
-            coef_bias = 0,
+            coef_bias=0,
             print_iter=False):
 
         """
-        Implementation of Gradient Descent
+        Implementation of Linear Regression using Gradient Descent
         """
         # Creating augmented Vector
         Xaug = self.augmentVector(X)
 
+        gradient_func = lambda p: -2 * np.matmul(Xaug.T, T) + 2 * np.matmul(np.matmul(Xaug.T, Xaug), p) + reg * p
+        cost_function = lambda p: np.dot((T - np.matmul(Xaug, p).reshape(T.shape)).T,
+                                         (T - np.matmul(Xaug, p).reshape(T.shape))) + reg / 2.0 * np.dot(p, p)
+
         # Initializing the coefficients
-        coef = np.zeros(Xaug.shape[1]) + coef_bias
-        grad = np.zeros(Xaug.shape[1])
+        point = np.zeros(Xaug.shape[1]) + coef_bias
 
         counter = 0
-        self.list_coef = [coef]
+        self.list_coef = [point]
+
         while counter < max_iter:
 
-            grad = -2 * np.matmul(Xaug.T, T) + 2 * np.matmul(np.matmul(Xaug.T, Xaug), coef) + reg * coef
+            gradient = gradient_func(point)
 
             if step == "fixed":
-                coef = coef - step_size * grad
-            elif step == "golden":
-                grad = grad / np.linalg.norm(grad)
-                function = lambda s: np.dot((T - np.matmul(Xaug, coef - s * grad).reshape(T.shape)).T,
-                                     (T - np.matmul(Xaug, coef - s * grad).reshape(T.shape)))
-                stepie = self.goldenSearch(function, a=0, b=3)
-                coef = coef - stepie * grad
+                point = point - step_size * gradient
 
-            self.list_coef.append(coef)
+            elif step == "golden":
+                point = point - self.goldenStep(cost_function, gradient_func, point) * gradient
+
+            ###########################
+
+            self.list_coef.append(point)
 
             if print_iter and counter % 100 == 0:
-                print('coef:' + str(coef))
+                print('coef:' + str(point))
 
-            if sum(abs(grad)) < tresh and print_iter:
+            if sum(abs(gradient)) < tresh and print_iter:
                 print("steps: " + str(counter))
                 break
 
@@ -54,10 +57,14 @@ class GradientClassifier(lm.LinearRegression):
 
         self.list_coef = np.array(self.list_coef)
 
-        self.coef = coef
+        self.coef = point
         return self
 
-    def goldenSearch(self, function, a=0, b=1, tresh=0.000001):
+    def goldenStep(self, function, gradient, point):
+        optimizer = lambda s: function(point - s * gradient(point))
+        return self.goldenSearch(optimizer)
+
+    def goldenSearch(self, function, a=0, b=3, tresh=0.000001):
 
         golden_ratio = 0.618034
 
