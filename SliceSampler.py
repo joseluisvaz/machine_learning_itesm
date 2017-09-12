@@ -14,6 +14,8 @@ import scipy.stats as st
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+plt.rcParams['figure.figsize'] = (5,5)
+
 class Distribution(object):
   """
   Base Distribution for the Samplers
@@ -237,13 +239,5 @@ class SliceSampler(Distribution):
 
     self.set_p((p1, p2),(0,mu+sigma))
 
-if __name__ == '__main__':  
-
-  F2 = SliceSampler(precision = 0.01)
-  F2.Set_Distribution(mu=2.0,sigma=2.0)
-  F2.Display_List_Dist()  
-  F2.General_Slice_Sampler(itera=10000)
-  F2.DisplayDistribution()
-  print ('Expected Value {}'.format(F2.SampledExpectedValue()))
 
     
