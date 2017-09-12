@@ -1,7 +1,5 @@
 import numpy as np
 import ML_Algorithms.LinearMethods as lm
-from math import sqrt
-
 
 class GradientClassifier(lm.LinearRegression):
 
@@ -12,9 +10,9 @@ class GradientClassifier(lm.LinearRegression):
             step_size=0.001,
             max_iter=10000,
             tresh=0.0000001,
-            step="fixed",
+            step_type="fixed",
             coef_bias=0,
-            print_iter=False):
+            print_val=False):
 
         """
         Implementation of Linear Regression using Gradient Descent
@@ -29,6 +27,15 @@ class GradientClassifier(lm.LinearRegression):
         # Initializing the coefficients
         point = np.zeros(Xaug.shape[1]) + coef_bias
 
+        self.coef = self.gradientDescent(cost_function, gradient_func, point, max_iter,
+                                         tresh, step_size=step_size,
+                                         step_type=step_type, print_val=print_val)
+        return self
+
+    # TODO: Recursive Gradient Descent
+    def gradientDescent(self, cost_function, gradient_func, point, max_iter,
+                        tresh, step_type="golden", step_size=0.0001, print_val=False):
+
         counter = 0
         self.list_coef = [point]
 
@@ -36,34 +43,33 @@ class GradientClassifier(lm.LinearRegression):
 
             gradient = gradient_func(point)
 
-            if step == "fixed":
+            if step_type == "fixed":
                 point = point - step_size * gradient
 
-            elif step == "golden":
+            elif step_type == "golden":
                 point = point - self.goldenStep(cost_function, gradient_func, point) * gradient
 
             ###########################
 
             self.list_coef.append(point)
 
-            if print_iter and counter % 100 == 0:
-                print('coef:' + str(point))
-
-            if sum(abs(gradient)) < tresh and print_iter:
-                print("steps: " + str(counter))
+            if sum(abs(gradient)) < tresh:
                 break
 
             counter = counter + 1
 
+        if print_val:
+            print("steps: " + str(counter))
+
         self.list_coef = np.array(self.list_coef)
 
-        self.coef = point
-        return self
+        return point
 
     def goldenStep(self, function, gradient, point):
         optimizer = lambda s: function(point - s * gradient(point))
         return self.goldenSearch(optimizer)
 
+    #TODO recursive goldenSearch
     def goldenSearch(self, function, a=0, b=3, tresh=0.000001):
 
         golden_ratio = 0.618034
