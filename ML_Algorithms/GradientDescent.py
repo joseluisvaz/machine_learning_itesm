@@ -20,9 +20,10 @@ class GradientClassifier(lm.LinearRegression):
         # Creating augmented Vector
         Xaug = self.augmentVector(X)
 
-        gradient_func = lambda p: -2 * np.matmul(Xaug.T, T) + 2 * np.matmul(np.matmul(Xaug.T, Xaug), p) + reg * p
-        cost_function = lambda p: np.dot((T - np.matmul(Xaug, p).reshape(T.shape)).T,
-                                         (T - np.matmul(Xaug, p).reshape(T.shape))) + reg / 2.0 * np.dot(p, p)
+        def gradient_func(p): -2 * np.matmul(Xaug.T, T) + 2 * np.matmul(np.matmul(Xaug.T, Xaug), p) + reg * p
+
+        def cost_function(p): np.dot((T - np.matmul(Xaug, p).reshape(T.shape)).T,
+                                     (T - np.matmul(Xaug, p).reshape(T.shape))) + reg / 2.0 * np.dot(p, p)
 
         # Initializing the coefficients
         point = np.zeros(Xaug.shape[1]) + coef_bias
@@ -32,7 +33,6 @@ class GradientClassifier(lm.LinearRegression):
                                          step_type=step_type, print_val=print_val)
         return self
 
-    # TODO: Recursive Gradient Descent
     def gradientDescent(self, cost_function, gradient_func, point, max_iter,
                         tresh, step_type="golden", step_size=0.0001, print_val=False):
 
@@ -66,10 +66,9 @@ class GradientClassifier(lm.LinearRegression):
         return point
 
     def goldenStep(self, function, gradient, point):
-        optimizer = lambda s: function(point - s * gradient(point))
+        def optimizer(s): function(point - s * gradient(point))
         return self.goldenSearch(optimizer)
 
-    #TODO recursive goldenSearch
     def goldenSearch(self, function, a=0, b=3, tresh=0.000001):
 
         golden_ratio = 0.618034
