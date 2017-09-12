@@ -30,20 +30,14 @@ class GradientClassifier(lm.LinearRegression):
         self.list_coef = [coef]
         while counter < max_iter:
 
-            # iterating through columns
-            loss = T - np.matmul(Xaug, coef).reshape(T.shape)
-
-            grad[0] = - np.matmul(loss.T, Xaug[:, 0])
-            for j in range(1, Xaug.shape[1]):
-                grad[j] = - np.matmul(loss.T, Xaug[:, j]) + reg * coef[j]
-
+            grad = -2 * np.matmul(Xaug.T, T) + 2 * np.matmul(np.matmul(Xaug.T, Xaug), coef) + reg * coef
 
             if step == "fixed":
                 coef = coef - step_size * grad
             elif step == "golden":
                 grad = grad / np.linalg.norm(grad)
-                function = lambda x: np.dot((T - np.matmul(Xaug, coef - x * grad).reshape(T.shape)).T,
-                                     (T - np.matmul(Xaug, coef - x * grad).reshape(T.shape)))
+                function = lambda s: np.dot((T - np.matmul(Xaug, coef - s * grad).reshape(T.shape)).T,
+                                     (T - np.matmul(Xaug, coef - s * grad).reshape(T.shape)))
                 stepie = self.goldenSearch(function, a=0, b=3)
                 coef = coef - stepie * grad
 
