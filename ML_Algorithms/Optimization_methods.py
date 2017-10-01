@@ -1,10 +1,11 @@
 import numpy as np
 
 
-def gradientDescent(cost_function, gradient_func, point, max_iter, tresh,
+def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh,
                     step_type="golden", step_size=0.0001, print_val=False):
     counter = 0
     list_coef = [point]
+    prev_point = point
 
     while counter < max_iter:
 
@@ -18,7 +19,7 @@ def gradientDescent(cost_function, gradient_func, point, max_iter, tresh,
 
         list_coef.append(point)
 
-        if sum(abs(gradient)) < tresh:
+        if abs(sum(prev_point - point)) < tresh:
             break
 
         counter = counter + 1
@@ -27,7 +28,6 @@ def gradientDescent(cost_function, gradient_func, point, max_iter, tresh,
         print("steps: " + str(counter))
 
     list_coef = np.array(list_coef)
-
     return point, list_coef
 
 

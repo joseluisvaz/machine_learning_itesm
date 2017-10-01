@@ -11,9 +11,8 @@ class GradientClassifier(lm.LinearRegression):
             reg=0,
             step_size=0.001,
             max_iter=10000,
-            tresh=0.0000001,
+            tresh=0.00001,
             step_type="fixed",
-            coef_bias=0,
             print_val=False):
 
         """
@@ -28,7 +27,7 @@ class GradientClassifier(lm.LinearRegression):
                                             (T - np.matmul(Xaug, p).reshape(T.shape))) + reg / 2.0 * np.dot(p, p)
 
         # Initializing the coefficients
-        point = np.zeros(Xaug.shape[1]) + coef_bias
+        point = np.random.randn(X.shape[1], 1)*0.01
 
         self.coef, self.list_coef = om.gradientDescent(cost_function, gradient_func, point, max_iter, tresh,
                                                        step_size=step_size, step_type=step_type, print_val=print_val)
