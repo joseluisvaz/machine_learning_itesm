@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh,
+def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh = 0.0001,
                     step_type="golden", step_size=0.0001, print_val=False):
     counter = 0
     list_coef = [point]
