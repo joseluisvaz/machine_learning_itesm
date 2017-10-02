@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh = 0.0001,
+def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh=0.0001,
                     step_type="golden", step_size=0.0001, print_val=False):
     counter = 0
     list_coef = [point]
@@ -10,25 +10,23 @@ def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh = 
     while counter < max_iter:
 
         gradient = gradient_func(point)
-
         if step_type == "fixed":
             point = point - step_size * gradient
 
         elif step_type == "golden":
             point = point - goldenStep(cost_function, gradient_func, point) * gradient
 
-        list_coef.append(point)
-
-        if abs(sum(prev_point - point)) < tresh:
+        if np.linalg.norm(prev_point-point) < tresh:
             break
 
+        list_coef.append(point)
         counter = counter + 1
+        prev_point = point
 
     if print_val:
         print("steps: " + str(counter))
 
-    list_coef = np.array(list_coef)
-    return point, list_coef
+    return point, np.array(list_coef)
 
 
 def goldenStep(function, gradient, point):
