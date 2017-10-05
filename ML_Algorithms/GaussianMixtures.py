@@ -1,5 +1,4 @@
 import numpy as np
-import math
 import random
 
 
@@ -55,26 +54,25 @@ class GaussianMixture:
 
     def __init__(self,
                  data,
-                 clusters = 2,
-                 sigma_range = (0.1, 1),
-                 mix = 0.5
+                 clusters=2,
+                 mix=0.5
                  ):
         """
-        Random initialization of parameters within the give ranges
-
+        Random initialization of mean vector,
+        Covariance Matrix initialized with Identity Matrix
         :param data: Data used by the parameters
         :param clusters: Number of clusters to fit the data to
-        :param sigma_range: Range of sigma values.
         :param mix: Parameter to mix the data.
         """
 
         self.data = data
         self.dists = {}
         self.mix = mix
-        mu_range = (min(data), max(data))
+        mins = np.min(data, axis=0)
+        maxs = np.max(data, axis=0)
         for i in range(clusters):
-            self.dists["dist" + str(i)] = UnivariateGaussian(random.uniform(mu_range[0], mu_range[1]),
-                                                             random.uniform(sigma_range[0], sigma_range[1]))
+            self.dists["dist" + str(i)] = MultivariateGaussian(random.uniform(mins, maxs).reshape(mins.shape[0], 1),
+                                                               np.identity(mins.shape[0]))
 
 
 
