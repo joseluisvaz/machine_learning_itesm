@@ -138,3 +138,21 @@ class GaussianMixture:
 
             self.dists["dist" + str(i)].sigma = accu_sigma["cluster" + str(i)]/den
             self.mix["dist" + str(i)] = den / self.n
+
+    def fit(self, iters=10, to_print=True):
+
+        # List of Gaussians in each iteration
+
+        if to_print:
+            for i in range(clusters):
+                mu = self.dists["dist" + str(i)].mu
+                cov = self.dists["dist" + str(i)].sigma
+                print("Iter 1 dist " + str(i+1) + " mean: " + str(mu) + " covariance: " + str(cov))
+
+        for j in range(iters):
+            self.maximization(self.expectation())
+            if to_print:
+                for i in range(clusters):
+                    mu = self.dists["dist" + str(i)].mu
+                    cov = self.dists["dist" + str(i)].sigma
+                    print("Iter " + str(j) + " dist " + str(i + 1) + " mean: " + str(mu) + " covariance: " + str(cov))
