@@ -134,7 +134,7 @@ class GaussianMixture:
 
             for j in range(self.n):
                 u = self.data[j].reshape((self.d, 1)) - self.dists["dist" + str(i)].mu
-                accu_sigma += probs["cluster" + str(i)][j] * np.dot(u, u.T)
+                accu_sigma["cluster" + str(i)] += probs["cluster" + str(i)][j] * np.dot(u, u.T)
 
-            self.dists["dist" + str(i)].sigma = accu_sigma/den
+            self.dists["dist" + str(i)].sigma = accu_sigma["cluster" + str(i)]/den
             self.mix["dist" + str(i)] = den / self.n
