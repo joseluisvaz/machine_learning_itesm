@@ -141,8 +141,6 @@ class GaussianMixture:
 
     def fit(self, iters=10, to_print=False):
 
-        # List of Gaussians in each iteration
-
         if to_print:
             for i in range(self.clusters):
                 mu = self.dists["dist" + str(i)].mu
