@@ -85,15 +85,16 @@ class GaussianMixture:
         """
         # Initializing dictionary to store probabilities of n clusters
         prob_z = {}
-        probs = np.zeros(self.data[0], 1)
+        probs = {}
 
+        self.log_likelihood = 0
         for i in range(self.clusters):
             probs["cluster" + str(i)] = np.zeros((self.data.shape[0], 1))
 
         for n in range(self.data.shape[0]):
 
             for i in range(self.clusters):
-                prob_z["cluster" + str(i)] = self.dists["dist" + str(i)].pdf(self.data[n]) * self.mix[0]
+                prob_z["cluster" + str(i)] = self.dists["dist" + str(i)].pdf(self.data[n]) * self.mix[i]
 
             # Normalization Factor
             den = sum(prob_z.values())
