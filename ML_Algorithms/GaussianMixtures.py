@@ -3,15 +3,21 @@ import random
 
 
 class UnivariateGaussian:
-    "Univariate Gaussian"
+    """
+    Univariate Gaussian
+    """
     def __init__(self, mu, sigma):
         self.mu = float(mu)
         self.sigma = float(sigma)
 
     def pdf(self, datapoint):
-        "Probability dennsity function of univariate gaussian/normal distribution"
-        z = (datapoint - self.mu)/ abs(self.sigma)
-        p_x = (1/(np.sqrt(2*self.sigma) * self.sigma))*np.exp(-z * z /2)
+        """
+        Probability density function of univariate gaussian/normal distribution
+        :param datapoint:
+        :return:
+        """
+        z = (datapoint - self.mu) / abs(self.sigma)
+        p_x = (1/(np.sqrt(2*self.sigma) * self.sigma))*np.exp(-z * z / 2)
         return p_x
 
     def __repr__(self):
@@ -49,6 +55,7 @@ class MultivariateGaussian:
 
         return float(p_x)
 
+
 class GaussianMixture:
     """
     Model Mixture of n multivariate Gaussian Distributions
@@ -62,8 +69,7 @@ class GaussianMixture:
         Random initialization of mean vector,
         Covariance Matrix initialized with Identity Matrix
         :param data: Data used by the parameters
-        :param clusters: Number of clusters to fit the data to
-        :param mix: Parameter to mix the data.
+        :param clusters: Number of clusters to fit
         """
 
         self.data = data
@@ -132,10 +138,3 @@ class GaussianMixture:
 
             self.dists["dist" + str(i)].sigma = accu_sigma/den
             self.mix["dist" + str(i)] = den / self.n
-
-
-
-
-
-
-
