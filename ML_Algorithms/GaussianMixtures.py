@@ -57,7 +57,6 @@ class GaussianMixture:
     def __init__(self,
                  data,
                  clusters=2,
-                 mix=(0.3333, 0.3333, 0.3333)
                  ):
         """
         Random initialization of mean vector,
@@ -70,13 +69,16 @@ class GaussianMixture:
         self.data = data
         self.clusters = clusters
         self.dists = {}
-        self.mix = mix
+        self.mix = {}
+        self.n = self.data.shape[0]
+        self.d = self.data.shape[1]
         self.log_likelihood = 0
         mins = np.min(data, axis=0)
         maxs = np.max(data, axis=0)
         for i in range(clusters):
             self.dists["dist" + str(i)] = MultivariateGaussian(random.uniform(mins, maxs).reshape(mins.shape[0], 1),
                                                                np.identity(mins.shape[0]))
+            self.mix["dist" + str(i)] = 1.0/self.clusters
 
     def expectation(self):
         """
@@ -94,7 +96,7 @@ class GaussianMixture:
         for n in range(self.data.shape[0]):
 
             for i in range(self.clusters):
-                prob_z["cluster" + str(i)] = self.dists["dist" + str(i)].pdf(self.data[n]) * self.mix[i]
+                prob_z["cluster" + str(i)] = self.dists["dist" + str(i)].pdf(self.data[n]) * self.mix["dist" + str(i)]
 
             # Normalization Factor
             den = sum(prob_z.values())
@@ -110,6 +112,26 @@ class GaussianMixture:
                 probs["cluster" + str(i)][n] = prob_z["cluster" + str(i)]
 
         return probs
+
+    def maximization(self,  probs):
+
+        # Updating the means
+        accu_sigma = {}
+
+        for i in range(self.clusters):
+
+            den = np.sum(probs["cluster" + str(i)])
+            self.dists["dist" + str(i)].mu = (np.sum(probs["cluster" + str(i)] * self.data, axis=0,
+                                                     keepdims=True) / den).T
+
+            accu_sigma["cluster" + str(i)] = np.zeros((self.d, self.d))
+
+            for j in range(self.n):
+                u = self.data[j].reshape((self.d, 1)) - self.dists["dist" + str(i)].mu
+                accu_sigma += probs["cluster" + str(i)][j] * np.dot(u, u.T)
+
+            self.dists["dist" + str(i)].sigma = accu_sigma/den
+            self.mix["dist" + str(i)] = den / self.n
 
 
 
