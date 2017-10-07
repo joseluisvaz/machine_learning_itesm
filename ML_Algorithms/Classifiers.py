@@ -8,6 +8,7 @@ This method is also wrapped with Linear Classiier and Linear Machine with their 
 """
 
 import numpy as np
+import ML_Algorithms.Optimization_methods as om
 
 class LinearRegression(object):
 

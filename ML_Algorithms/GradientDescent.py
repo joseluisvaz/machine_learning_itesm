@@ -1,5 +1,5 @@
 import numpy as np
-import ML_Algorithms.LinearMethods as lm
+import ML_Algorithms.Classifiers as lm
 import ML_Algorithms.Optimization_methods as om
 
 
