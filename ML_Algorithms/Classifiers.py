@@ -3,15 +3,16 @@ This is a class for Linear Classification and Regression
 
 The canonical solution of linear regression with regularization is implemented
 
-This method is also wrapped with Linear Classiier and Linear Machine with their respective discriminant function
+This method is also wrapped with Linear Classifier and Linear Machine with their respective discriminant function
 
 """
 
 import numpy as np
+import ML_Algorithms.utils
 import ML_Algorithms.Optimization_methods as om
 
-class LinearRegression(object):
 
+class LinearRegression(object):
 
     def __init__(self):
         self.coef = None
@@ -88,6 +89,16 @@ class LinearRegression(object):
         return Y
 
 
+# TODO: Logistic regression implementation
+class LogisticRegression(LinearRegression):
+
+    def fit(self, X):
+        return self
+
+    def predict(self, X):
+        return self
+
+
 class LinearClassifier(LinearRegression):
 
     def predict(self, X):
@@ -111,6 +122,7 @@ class LinearClassifier(LinearRegression):
                 Y[i] = -1
 
         return Y
+
 
 class LinearMachine(LinearRegression):
 
