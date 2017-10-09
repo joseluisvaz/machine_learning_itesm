@@ -8,7 +8,7 @@ This method is also wrapped with Linear Classifier and Linear Machine with their
 """
 
 import numpy as np
-import ML_Algorithms.utils
+import ML_Algorithms.utils as utils
 import ML_Algorithms.Optimization_methods as om
 
 
@@ -18,19 +18,6 @@ class LinearRegression(object):
         self.coef = None
         self.dim = None
         self.list_coef = []
-
-    def augmentVector(self, X):
-        """
-        Function for augmenting Vector [numpy.array]
-
-        :param X: numpy array
-        :return: augmented numpy array
-        """
-
-        Xdummy = np.ones((X.shape[0], 1))
-        X = np.concatenate([Xdummy, X], axis=1)
-
-        return X
 
     def fit(self,
             X,
@@ -48,7 +35,7 @@ class LinearRegression(object):
         """
 
         # Creating augmented Vector
-        Xaug = self.augmentVector(X)
+        Xaug = utils.augment_vector(X)
 
         if solver == "canonical":
             Xinner = np.matmul(np.linalg.inv(reg * np.identity(Xaug.shape[1]) + np.matmul(Xaug.T, Xaug)), Xaug.T)
@@ -82,7 +69,7 @@ class LinearRegression(object):
         """
 
         # Creating augmented  Vector
-        Xaug = self.augmentVector(X)
+        Xaug = utils.augment_vector(X)
 
         Y = np.matmul(Xaug, self.coef)
 
@@ -109,7 +96,7 @@ class LinearClassifier(LinearRegression):
         :return: Y prediction
         """
         # Creating augmented  Vector
-        Xaug = self.augmentVector(X)
+        Xaug = utils.augment_vector(X)
 
         # Linear Regression
         Y = np.matmul(Xaug, self.coef)
@@ -135,7 +122,7 @@ class LinearMachine(LinearRegression):
         """
 
         # Creating augmented  Vector
-        Xaug = self.augmentVector(X)
+        Xaug = utils.augment_vector(X)
 
         # Linear Regression
         T = np.matmul(Xaug, self.coef)

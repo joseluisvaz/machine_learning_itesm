@@ -12,5 +12,5 @@ def augment_vector(X):
     Xdummy = np.ones((X.shape[0], 1))
     X = np.concatenate([Xdummy, X], axis=1)
 
-    return
+    return X
 
