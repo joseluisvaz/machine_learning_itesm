@@ -12,7 +12,7 @@ class Logistic_Regression(Classifiers.LinearRegression):
             solver="gradient",
             reg=0,
             step_size=0.001,
-            max_iter=10000,
+            max_iter=100,
             tresh=0.00001,
             step_type="fixed",
             print_val=False):
@@ -53,4 +53,11 @@ class Logistic_Regression(Classifiers.LinearRegression):
         return self
 
     def predict(self, X):
-        return self
+        u = np.dot(X, self.coef)
+        Y = utils.sigmoid(u)
+        for i in range(Y.shape[0]):
+            if Y[i] >= 0.5:
+                Y[i] = 1
+            elif Y[i] < 0.5:
+                Y[i] = 0
+        return Y

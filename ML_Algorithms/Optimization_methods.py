@@ -1,15 +1,15 @@
 import numpy as np
 
 
-def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh=0.0001,
+def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh=0.00001,
                     step_type="fixed", step_size=0.0001, print_val=False):
     counter = 0
     list_coef = [point]
     prev_point = point
 
     while counter < max_iter:
-
         gradient = gradient_func(point)
+        print(gradient)
         if step_type == "fixed":
             point = point - step_size * gradient
 
