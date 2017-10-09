@@ -14,3 +14,6 @@ def augment_vector(X):
 
     return X
 
+
+def sigmoid(x):
+    return 1/(1 + np.exp(-x))

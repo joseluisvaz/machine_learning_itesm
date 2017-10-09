@@ -1,0 +1,56 @@
+import numpy as np
+from ML_Algorithms import Classifiers
+from ML_Algorithms import utils
+from ML_Algorithms import Optimization_methods as om
+
+
+class Logistic_Regression(Classifiers.LinearRegression):
+
+    def fit(self,
+            X,
+            T,
+            solver="gradient",
+            reg=0,
+            step_size=0.001,
+            max_iter=10000,
+            tresh=0.00001,
+            step_type="fixed",
+            print_val=False):
+
+        """
+        Implementation of Linear Regression using Gradient Descent
+        """
+
+        # Creating augmented Vector
+        Xaug = utils.augment_vector(X)
+
+        m = Xaug.shape[0]
+        d = Xaug.shape[1]
+
+        if solver == "gradient":
+            step_type = "fixed"
+        elif solver == "gradient-gold":
+            step_type = "golden"
+
+        def cost_function(p):
+            A = utils.sigmoid(np.dot(Xaug, p))
+            cost = -1 / m * np.sum(T * np.log(A) + (1 - T) * np.log(1 - A))
+            return cost
+
+        def gradient_func(p):
+            grad = np.zeros(p.shape)
+            u = np.dot(Xaug, p) - T
+            for i in range(d):
+                z = np.multiply(u, Xaug[:, i])
+                grad[i] = np.sum(z)
+            return grad
+
+        # Initializing the coefficients
+        point = np.random.randn(Xaug.shape[1], 1)
+
+        self.coef, self.list_coef = om.gradientDescent(cost_function, gradient_func, point, max_iter, tresh,
+                                                       step_size=step_size, step_type=step_type, print_val=print_val)
+        return self
+
+    def predict(self, X):
+        return self
