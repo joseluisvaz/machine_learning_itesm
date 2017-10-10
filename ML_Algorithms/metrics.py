@@ -64,8 +64,8 @@ def f1_score(Y, Ypred):
     return 2 * (nom / den)
 
 
-def print_metrics(Y, Ypred):
-    print("Log_reg train set")
+def print_metrics(Y, Ypred, name):
+    print(name)
     print("Conf_matrix:")
     print(confusion_matrix(Y, Ypred))
     print("Accuracy:")
