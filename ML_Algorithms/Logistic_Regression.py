@@ -2,6 +2,7 @@ import numpy as np
 from ML_Algorithms import Classifiers
 from ML_Algorithms import utils
 from ML_Algorithms import Optimization_methods as om
+from ML_Algorithms import metrics as mtr
 
 
 class Logistic_Regression(Classifiers.LinearRegression):
@@ -65,3 +66,23 @@ class Logistic_Regression(Classifiers.LinearRegression):
             elif Y[i] < 0.5:
                 Y[i] = 0
         return Y
+
+    def roc(self, X, Y):
+
+        # Creating augmented  Vector
+        Xaug = utils.augment_vector(X)
+
+        # Linear Regression
+        Ypred = utils.sigmoid(np.dot(Xaug, self.coef))
+        x = np.linspace(0.01, 0.99, 99)
+        pred_label = np.zeros(Y.shape)
+        ROC = []
+        for j in x:
+            for i in range(Y.shape[0]):
+                if Ypred[i] >= j:
+                    pred_label[i] = 1
+                elif Ypred[i] < j:
+                    pred_label[i] = 0
+            ROC.append([mtr.sensitivity(Y, pred_label),
+                        1 - mtr.specificity(Y, pred_label)])
+        return ROC

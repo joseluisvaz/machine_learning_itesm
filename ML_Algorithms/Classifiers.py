@@ -10,6 +10,7 @@ This method is also wrapped with Linear Classifier and Linear Machine with their
 import numpy as np
 import ML_Algorithms.utils as utils
 import ML_Algorithms.Optimization_methods as om
+import ML_Algorithms.metrics as mtr
 
 
 class LinearRegression(object):
@@ -96,9 +97,29 @@ class LinearClassifier(LinearRegression):
             if Y[i] >= 0.5:
                 Y[i] = 1
             elif Y[i] < 0.5:
-                Y[i] = -1
+                Y[i] = 0
 
         return Y
+
+    def roc(self, X, Y):
+
+        # Creating augmented  Vector
+        Xaug = utils.augment_vector(X)
+
+        # Linear Regression
+        Ypred = np.matmul(Xaug, self.coef)
+        x = np.linspace(0.01, 0.99, 99)
+        pred_label = np.zeros(Y.shape)
+        ROC = []
+        for j in x:
+            for i in range(Y.shape[0]):
+                if Ypred[i] >= j:
+                    pred_label[i] = 1
+                elif Ypred[i] < j:
+                    pred_label[i] = 0
+            ROC.append([mtr.sensitivity(Y, pred_label),
+                        1 - mtr.specificity(Y, pred_label)])
+        return ROC
 
 
 class LinearMachine(LinearRegression):
