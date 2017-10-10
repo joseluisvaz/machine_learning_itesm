@@ -117,9 +117,9 @@ class LinearClassifier(LinearRegression):
                     pred_label[i] = 1
                 elif Ypred[i] < j:
                     pred_label[i] = 0
-            ROC.append([mtr.sensitivity(Y, pred_label),
-                        1 - mtr.specificity(Y, pred_label)])
-        return ROC
+            ROC.append([1 - mtr.specificity(Y, pred_label),
+                        mtr.sensitivity(Y, pred_label)])
+        return np.array(ROC)
 
 
 class LinearMachine(LinearRegression):
