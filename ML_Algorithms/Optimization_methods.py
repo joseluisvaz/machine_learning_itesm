@@ -9,15 +9,14 @@ def gradientDescent(cost_function, gradient_func, point, max_iter=1000, tresh=0.
 
     while counter < max_iter:
         gradient = gradient_func(point)
-        print(gradient)
         if step_type == "fixed":
             point = point - step_size * gradient
 
         elif step_type == "golden":
             point = point - goldenStep(cost_function, gradient_func, point) * gradient
 
-        if np.linalg.norm(prev_point-point) < tresh:
-            break
+        #if np.linalg.norm(prev_point-point) < tresh:
+        #    break
 
         list_coef.append(point)
         counter = counter + 1

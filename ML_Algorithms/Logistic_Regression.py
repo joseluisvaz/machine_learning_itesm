@@ -6,6 +6,7 @@ from ML_Algorithms import Optimization_methods as om
 
 class Logistic_Regression(Classifiers.LinearRegression):
 
+
     def fit(self,
             X,
             T,
@@ -34,15 +35,17 @@ class Logistic_Regression(Classifiers.LinearRegression):
 
         def cost_function(p):
             A = utils.sigmoid(np.dot(Xaug, p))
-            cost = -1 / m * np.sum(T * np.log(A) + (1 - T) * np.log(1 - A))
+            inner = T * np.log(A) + (1 - T) * np.log(1 - A)
+            print(inner)
+            cost = -1 / m * np.sum(T * np.log(A) + (1 - T) * np.log(1 - A)) + reg / 2.0 * np.dot(p.T, p)
             return cost
 
         def gradient_func(p):
             grad = np.zeros(p.shape)
-            u = np.dot(Xaug, p) - T
+            u = utils.sigmoid(np.dot(Xaug, p)) - T
             for i in range(d):
-                z = np.multiply(u, Xaug[:, i])
-                grad[i] = np.sum(z)
+                z = np.multiply(u, Xaug[:, i].reshape((Xaug.shape[0], 1)))
+                grad[i] = np.sum(z) + reg * p[i]
             return grad
 
         # Initializing the coefficients
@@ -53,6 +56,7 @@ class Logistic_Regression(Classifiers.LinearRegression):
         return self
 
     def predict(self, X):
+        X = utils.augment_vector(X)
         u = np.dot(X, self.coef)
         Y = utils.sigmoid(u)
         for i in range(Y.shape[0]):
