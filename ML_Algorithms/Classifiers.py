@@ -76,16 +76,6 @@ class LinearRegression(object):
         return Y
 
 
-# TODO: Logistic regression implementation
-class LogisticRegression(LinearRegression):
-
-    def fit(self, X):
-        return self
-
-    def predict(self, X):
-        return self
-
-
 class LinearClassifier(LinearRegression):
 
     def predict(self, X):
@@ -103,9 +93,9 @@ class LinearClassifier(LinearRegression):
 
         # Discriminant Function
         for i in range(Y.shape[0]):
-            if Y[i] >= 0:
+            if Y[i] >= 0.5:
                 Y[i] = 1
-            elif Y[i] < 0:
+            elif Y[i] < 0.5:
                 Y[i] = -1
 
         return Y
