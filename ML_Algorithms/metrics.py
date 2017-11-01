@@ -2,35 +2,55 @@ import numpy as np
 
 
 def true_pos(Y, Ypred):
+    if -1.0 in Y:
+        val = -1.0
+    else:
+        val = 0
+
     count = 0
     for i in range(Y.shape[0]):
         if Y[i] == 1.0 and Ypred[i] == 1.0:
             count += 1
-    return count
+    return float(count)
 
 
 def true_neg(Y, Ypred):
+    if -1.0 in Y:
+        val = -1.0
+    else:
+        val = 0
+
     count = 0
     for i in range(Y.shape[0]):
-        if Y[i] == 0.0 and Ypred[i] == 0.0:
+        if Y[i] == val and Ypred[i] == val:
             count += 1
-    return count
+    return float(count)
 
 
 def false_pos(Y, Ypred):
+    if -1.0 in Y:
+        val = -1.0
+    else:
+        val = 0
+
     count = 0
     for i in range(Y.shape[0]):
-        if Y[i] == 0.0 and Ypred[i] == 1.0:
+        if Y[i] == val and Ypred[i] == 1.0:
             count += 1
-    return count
+    return float(count)
 
 
 def false_neg(Y, Ypred):
+    if -1.0 in Y:
+        val = -1.0
+    else:
+        val = 0
+
     count = 0
     for i in range(Y.shape[0]):
-        if Y[i] == 1.0 and Ypred[i] == 0.0:
+        if Y[i] == 1.0 and Ypred[i] == val:
             count += 1
-    return count
+    return float(count)
 
 
 def accuracy(Y, Ypred):
